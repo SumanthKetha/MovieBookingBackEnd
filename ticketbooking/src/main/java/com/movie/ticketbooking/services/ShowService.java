@@ -1,12 +1,16 @@
 package com.movie.ticketbooking.services;
 
 import com.movie.ticketbooking.models.Movie;
+import com.movie.ticketbooking.models.Screen;
 import com.movie.ticketbooking.models.Show;
 import com.movie.ticketbooking.repo.MovieRepo;
+import com.movie.ticketbooking.repo.ScreenRepo;
 import com.movie.ticketbooking.repo.ShowRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,20 +21,27 @@ public class ShowService {
 
     @Autowired
     private  MovieRepo movieRepo;
+    @Autowired
+    private ScreenRepo screenRepo;
 
     public Show addShow(Show show) {
-        Movie movie = movieRepo.findById(show.getIdMovie())
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
-        System.out.println("Found movie"+movie);
-        Show showtime = new Show();
-        showtime.setMovieId(movie);  // Set the movie entity
+        Movie movie = movieRepo.findById(show.getMovie().getId())
+                .orElseThrow(() -> new RuntimeException("Movie not found with ID: " + show.getMovie().getId()));
 
-        showtime.setShowDate(show.getShowDate());  // Assuming showDate is a string and needs to be converted
-        System.out.println(show.getShowTime());
-        showtime.setShowTime(show.getShowTime());  // Set show time
+        Screen screen = screenRepo.findById(show.getScreen().getId())
+                .orElseThrow(() -> new RuntimeException("Screen not found with ID: " + show.getScreen().getId()));
 
-        // Save the showtime object
-      return   repo.save(showtime);
+
+        Show show1 = new Show();
+        show1.setMovie(movie);
+        show1.setScreen(screen);
+        show1.setShowTime(show.getShowTime());  // Make sure this is a valid time
+        show1.setShowDate(show.getShowDate()); // Make sure the date is valid
+
+
+// Proceed to save
+        return repo.save(show1);
+
     }
 
     public List<Show> getAllShowsList() {

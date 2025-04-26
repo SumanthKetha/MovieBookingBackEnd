@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,8 +37,18 @@ public class MovieController {
     }
 
     @PostMapping("/addMovie")
-    public ResponseEntity<?> addMovie(@RequestBody Movie movie) {
+    public ResponseEntity<?> addMovie( @RequestPart("movie") Movie movie,
+                                       @RequestPart("image") MultipartFile imageFile) {
         try {
+            // Save image to local folder
+            String uploadDir = "uploads/";
+            String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, imageFile.getBytes());
+
+            // Set image path to movie
+            movie.setImagePath(filePath.toString());
             Movie addedMovie = service.addMovie(movie);
             // Create the response map
             Map<String, Object> response = new HashMap<>();
@@ -60,9 +71,11 @@ public class MovieController {
     }
 
     @PutMapping("/updateMovie/{id}")
-    public ResponseEntity<?> updateMovie(@RequestBody Movie movie, @PathVariable int id) {
+    public ResponseEntity<?> updateMovie(@PathVariable int id,
+                                         @RequestPart("movie") Movie movie,
+                                         @RequestPart(value = "image", required = false) MultipartFile file) {
         try {
-            Movie updatedMovie = service.updateMovie(movie, id);
+            Movie updatedMovie = service.updateMovie(movie, id,file);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Movie updated successfully");
             response.put("movie", updatedMovie);

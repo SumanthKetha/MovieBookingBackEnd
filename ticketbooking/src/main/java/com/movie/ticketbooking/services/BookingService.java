@@ -56,10 +56,10 @@ public class BookingService {
         List<Booking> bookings = bookRepo.findByUserId(userId);
 
         // Optionally, populate movie details in each booking
-        for (Booking booking : bookings) {
-            // Fetching movie details via show relationship (if necessary)
-            booking.getShow().getMovieId(); // Assuming Show has a reference to Movie
-        }
+//        for (Booking booking : bookings) {
+//            // Fetching movie details via show relationship (if necessary)
+//            booking.getShow().getMovieId(); // Assuming Show has a reference to Movie
+//        }
 
         return bookings;
     }

@@ -1,6 +1,7 @@
 package com.movie.ticketbooking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,11 @@ public class Seat {
 
     @Column(columnDefinition = "BOOLEAN DEFAULT true")
     private Boolean isAvailable;
+
+    @ManyToOne
+    @JoinColumn(name = "screen_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnoreProperties("seats")
+    private Screen screen;
 
     @ManyToOne
     @JoinColumn(name = "show_id", referencedColumnName = "id", nullable = false)

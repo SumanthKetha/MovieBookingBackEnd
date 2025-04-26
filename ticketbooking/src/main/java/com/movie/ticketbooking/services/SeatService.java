@@ -46,7 +46,7 @@ public class SeatService {
                 seat.setSeatNo(String.valueOf(seatIndex)); // Set seat number (e.g., "1")
                 seat.setShow(show);  // Associate the seat with the show
                 seat.setIsAvailable(true);
-
+                seat.setScreen(show.getScreen());
                 seatRepo.save(seat);  // Save the seat
             }
         }

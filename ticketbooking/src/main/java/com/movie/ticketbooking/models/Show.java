@@ -1,12 +1,15 @@
 package com.movie.ticketbooking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -15,37 +18,25 @@ import java.util.List;
 @Table(name = "showtimes")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Show {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Integer id;
 
-    @Column(name="show_time")
-    private String showTime;
 
-    @Column(name = "date",nullable = false)
-    private LocalDate showDate;
+        private LocalTime showTime;
+        private LocalDate showDate;
 
-    @ManyToOne
-    @JoinColumn(name = "movieId", referencedColumnName = "id", nullable = false)
-    private Movie movieId;
+        @ManyToOne
+        @JoinColumn(name = "movie_id", referencedColumnName = "id", nullable = false)
+        @JsonIgnoreProperties("showTimes")
+        private Movie movie;
 
-    @OneToMany(mappedBy = "show",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Seat> seatsList;
-
-    // Custom getter for movie ID
-    public Integer getIdMovie() {
-        return movieId != null ? movieId.getId() : null;
+        @ManyToOne
+        @JoinColumn(name = "screen_id", referencedColumnName = "id", nullable = false)
+        @JsonIgnoreProperties("shows")
+        private Screen screen;
     }
 
-    public Show() {
-        showDate = LocalDate.now();  // Current date
-    }
 
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return showDate.format(formatter);
-    }
-}

@@ -21,7 +21,7 @@ public class ShowController {
     @PostMapping("/addShow")
     public ResponseEntity<?> addShow(@RequestBody Show show) {
         try {
-            System.out.println(show);
+            System.out.println("Movie From regiuest==="+ show.getMovie());
             Show addedShow = showService.addShow(show);
             // Create the response map
             Map<String, Object> response = new HashMap<>();

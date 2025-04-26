@@ -28,7 +28,7 @@ public class Movie {
 
     private String movieName;
 
-    private Integer duration;
+    private String duration;
 
     private String description;
 
@@ -38,13 +38,15 @@ public class Movie {
 
     private String director;
 
+    private String imagePath;
+
     @Enumerated(value = EnumType.STRING)
     private Category genre;
 
     @Enumerated(value = EnumType.STRING)
     private Language language;
 
-    @OneToMany(mappedBy = "movieId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Show> showTimes;
 
